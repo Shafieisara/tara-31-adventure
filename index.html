@@ -24,10 +24,10 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 #mov.on{display:flex;animation:fIn .3s ease}
 @keyframes fIn{from{opacity:0}to{opacity:1}}
 .ov-bg{position:absolute;inset:0;background:rgba(20,10,5,.88);backdrop-filter:blur(20px)}
-.mc{position:relative;z-index:1;background:#fff;border-radius:16px;width:360px;max-width:92vw;overflow:hidden;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 80px rgba(0,0,0,.45)}
+.mc{position:relative;z-index:1;background:#fff;border-radius:16px;width:min(920px,96vw);max-height:96vh;overflow:auto;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 80px rgba(0,0,0,.45)}
 @keyframes popIn{from{transform:scale(.15) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
-.mc-photo{height:220px;display:flex;align-items:center;justify-content:center;font-size:74px;position:relative;overflow:hidden;background:#1a1a1a}
-.mc-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,.2));pointer-events:none}
+.mc-photo{height:min(78vh,820px);display:flex;align-items:center;justify-content:center;font-size:74px;position:relative;overflow:hidden;background:#111}
+.mc-photo img{width:100%;height:100%;object-fit:contain;object-position:center}
 .mc-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);border:none;color:#fff;font-size:18px;cursor:pointer;padding:6px 10px;border-radius:50%;z-index:2;transition:background .15s}
 .mc-carousel-arrow:hover{background:rgba(0,0,0,.7)}
 .mc-carousel-arrow.left{left:6px}
@@ -625,9 +625,10 @@ function drawCelebrationScreen(){
   if(eTimer>60){
     const popA=Math.min(1,(eTimer-60)/30);
     if(endImg&&endImg.complete&&endImg.naturalWidth){
-      let pw=Math.min(W*.62,320),ph=pw*endImg.naturalHeight/endImg.naturalWidth;
-      if(ph>H*.58){ph=H*.58;pw=ph*(endImg.naturalWidth/endImg.naturalHeight);}
-      const px=(W-pw)/2,py=(H-ph)/2-36;
+      const maxW=Math.min(W*.92,760), maxH=H*.78;
+      let pw=maxW,ph=pw*endImg.naturalHeight/endImg.naturalWidth;
+      if(ph>maxH){ph=maxH;pw=ph*(endImg.naturalWidth/endImg.naturalHeight);}
+      const px=(W-pw)/2,py=Math.max(8,(H-ph)/2-28);
       ctx.save();ctx.globalAlpha=popA*.6;ctx.fillStyle='rgba(0,0,0,.55)';ctx.fillRect(0,0,W,H);ctx.restore();
       ctx.save();ctx.globalAlpha=popA;
       ctx.shadowColor='rgba(0,0,0,.6)';ctx.shadowBlur=40;
@@ -763,7 +764,7 @@ function drawMemCard(m){
   const plat=P_DEF.find(p=>p.memId===m.id);if(!plat) return;
   const cx=plat.x+plat.w/2, top=plat.y;
   if(cx<camX-200||cx>camX+VW+200) return;
-  const CW=112,CH=132;
+  const CW=168,CH=196;
   const cardX=cx-CW/2, cardY=top-CH-14;
   const isP=portal&&portal.memId===m.id;
   ctx.save();
@@ -785,29 +786,30 @@ function drawMemCard(m){
   ctx.fillStyle='#fff';rr(cardX,cardY,CW,CH,7);ctx.fill();
   const cImgs=m.imgs();const cSlide=carouselState[m.id]||0;
   const cImg=cImgs[cSlide];
-  ctx.fillStyle=m.col;rr(cardX+8,cardY+8,CW-16,90,4);ctx.fill();
+  ctx.fillStyle=m.col;rr(cardX+8,cardY+8,CW-16,148,4);ctx.fill();
   if(cImg&&cImg.complete&&cImg.naturalWidth){
-    ctx.save();ctx.beginPath();rr(cardX+8,cardY+8,CW-16,90,4);ctx.clip();
-    ctx.drawImage(cImg,cardX+8,cardY+8,CW-16,90);ctx.restore();
+    ctx.save();ctx.beginPath();rr(cardX+8,cardY+8,CW-16,148,4);ctx.clip();
+    const ir=cImg.naturalWidth/cImg.naturalHeight, boxW=CW-16, boxH=148;
+    let dw=boxW, dh=boxW/ir;
+    if(dh>boxH){dh=boxH;dw=boxH*ir;}
+    ctx.drawImage(cImg, cardX+8+(boxW-dw)/2, cardY+8+(boxH-dh)/2, dw, dh);
+    ctx.restore();
   } else {
     ctx.font='36px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(m.icon,cx,cardY+53);
   }
   if(cImgs.length>1){
-    const dotR=3,dotGap=9,dotY=cardY+93;
+    const dotR=3,dotGap=9,dotY=cardY+150;
     const totalDotW=(cImgs.length-1)*dotGap;
     cImgs.forEach((_,di)=>{
       ctx.fillStyle=di===cSlide?'#fff':'rgba(255,255,255,.45)';
       ctx.beginPath();ctx.arc(cx-totalDotW/2+di*dotGap,dotY,di===cSlide?dotR:dotR*.65,0,Math.PI*2);ctx.fill();
     });
   }
-  const ps=ctx.createLinearGradient(cardX+8,cardY+8,cardX+CW-8,cardY+98);
-  ps.addColorStop(0,'rgba(255,255,255,.12)');ps.addColorStop(1,'rgba(0,0,0,.18)');
-  ctx.fillStyle=ps;rr(cardX+8,cardY+8,CW-16,90,4);ctx.fill();
   if(visited.has(m.id)){ctx.strokeStyle=m.col;ctx.lineWidth=2.2;rr(cardX,cardY,CW,CH,7);ctx.stroke();}
   ctx.fillStyle='rgba(255,230,100,.68)';rr(cx-18,cardY-9,36,13,2);ctx.fill();
-  ctx.fillStyle=m.col;rr(cardX+8,cardY+102,CW-16,12,6);ctx.fill();
-  ctx.fillStyle='#fff';ctx.font='bold 9px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';ctx.fillText(m.year,cx,cardY+104);
-  ctx.fillStyle='#1a1a1a';ctx.font='bold 10px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='top';ctx.fillText(m.title,cx,cardY+114);
+  ctx.fillStyle=m.col;rr(cardX+8,cardY+162,CW-16,14,6);ctx.fill();
+  ctx.fillStyle='#fff';ctx.font='bold 9px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';ctx.fillText(m.year,cx,cardY+169);
+  ctx.fillStyle='#1a1a1a';ctx.font='bold 10px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='top';ctx.fillText(m.title,cx,cardY+180);
   if(visited.has(m.id)){ctx.fillStyle=m.col;ctx.font='11px serif';ctx.fillText('✓',cardX+CW-13,cardY+5);}
   ctx.restore();
   const dist=Math.abs(PL.x+PL.w/2-cx);
@@ -1126,7 +1128,7 @@ function renderOvSlide(m,photoDiv){
   photoDiv.style.background=`linear-gradient(135deg,${m.col},${m.col}88)`;
   if(img&&img.complete&&img.naturalWidth){
     const el=document.createElement('img');el.src=img.src;
-    el.style.cssText='width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+    el.style.cssText='width:100%;height:100%;object-fit:contain;object-position:center;position:absolute;inset:0;background:#111;';
     photoDiv.appendChild(el);
   } else {
     const sp=document.createElement('span');sp.textContent=m.icon;photoDiv.appendChild(sp);
