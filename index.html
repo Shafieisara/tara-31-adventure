@@ -46,8 +46,11 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .mc-close:hover{opacity:.85}
 #vhsov{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center}
 #vhsov.on{display:flex;animation:fIn .3s ease}
-.vhs-panel{position:relative;z-index:1;background:#0d0d0d;border:2px solid #FFD93D;border-radius:14px;width:370px;max-width:90vw;padding:22px;color:#fff;animation:popIn .35s cubic-bezier(.34,1.56,.64,1)}
+.vhs-panel{position:relative;z-index:1;background:#0d0d0d;border:2px solid #FFD93D;border-radius:14px;width:min(920px,96vw);max-width:96vw;padding:22px;color:#fff;animation:popIn .35s cubic-bezier(.34,1.56,.64,1)}
 .vhs-h{color:#FFD93D;font-size:15px;font-weight:bold;margin-bottom:14px;text-align:center;letter-spacing:1px}
+#vhs-video{display:none;width:100%;max-height:68vh;border-radius:10px;background:#000;margin-bottom:12px}
+.vhs-panel.playing #vhs-video{display:block}
+.vhs-panel.playing .vhs-player{display:none}
 .vhs-player{background:#0a0a0a;border-radius:8px;padding:10px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
 .vhs-cassette{flex:0 0 auto}
 .film-reel-wrap{flex:1;overflow:hidden;border-radius:4px;height:36px;background:#000}
@@ -131,7 +134,8 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
   <div id="vhsov">
     <div class="ov-bg" onclick="closeVHS()"></div>
     <div class="vhs-panel">
-      <div class="vhs-h">📼 &nbsp;نوار صدای خاطره</div>
+      <div class="vhs-h">📼 &nbsp;نوار خاطره</div>
+      <video id="vhs-video" playsinline controls></video>
       <div class="vhs-player">
         <div class="vhs-cassette"><canvas id="cassette-canvas" width="90" height="60"></canvas></div>
         <div class="film-reel-wrap"><canvas id="film-canvas" width="220" height="36"></canvas></div>
@@ -227,10 +231,11 @@ const CONFIG = {
   ],
 
   VHS_TAPES: [
-    { label:'یه پیام فقط برای تارا 🎤' },
-    { label:'از ۲۰۱۵ چه چیزی را یادت می‌آید؟ 💭' },
-    { label:'آرزوی تولد را بگو 🎶' }
+    { label:'نوار ۱' },
+    { label:'نوار ۲' },
+    { label:'نوار ۳' }
   ],
+  VHS_VIDEO: ['videos/1.mp4', 'videos/2.mp4', 'videos/3.mp4'],
   VHS_AUDIO: [null, null, null],
   BG_SKY: null,
   BG_CAVE: null,
@@ -849,7 +854,7 @@ function drawVHSTape(vs){
   ctx.strokeStyle=near?`rgba(255,215,0,${.7+Math.sin(gt*.1)*.28})`:'rgba(70,70,70,.6)';
   ctx.lineWidth=near?1.8:.8;rr(tx,ty,TW,TH,4);ctx.stroke();
   ctx.fillStyle='#FFD93D';rr(tx+4,ty+4,TW-8,14,2);ctx.fill();
-  ctx.fillStyle='#5a2d00';ctx.font='bold 5.5px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('📼 VOICE MEMORY',vs.x,ty+11);
+  ctx.fillStyle='#5a2d00';ctx.font='bold 5.5px Georgia';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('📼 VIDEO',vs.x,ty+11);
   ctx.fillStyle='#0a0a0a';rr(tx+7,ty+21,TW-14,14,2);ctx.fill();
   ctx.strokeStyle='#2a2a2a';ctx.lineWidth=.8;rr(tx+7,ty+21,TW-14,14,2);ctx.stroke();
   const ra=isRec?gt*.14:0;
@@ -1385,32 +1390,46 @@ function drawFilmReel(){
 }
 
 window.closeVHS=function(){
+  activeVhsIdx=-1;
   VHSOV.classList.remove('on');
   canvas.classList.remove('vhs-blur');
   TAPEAUDIO.forEach(a=>{if(a){a.pause();a.currentTime=0;}});
+  const video=document.getElementById('vhs-video');
+  if(video){video.onerror=null;video.onloadeddata=null;video.pause();video.removeAttribute('src');video.load();}
+  const panel=document.querySelector('.vhs-panel');
+  if(panel) panel.classList.remove('playing');
   if(activeVhsSpot){activeVhsSpot.active=false;activeVhsSpot=null;}
-  activeVhsIdx=-1;
   cancelAnimationFrame(cassRAF);
 };
 
 function setupVHSPanel(idx){
   const btns=document.querySelector('.vhs-btns');
-  const hasAudio = TAPEAUDIO[idx] !== null;
-  if(hasAudio){
-    btns.innerHTML=
-      '<button class="vbtn" id="play-tape-btn" style="background:#1a7a3a" onclick="toggleTapePlay()">▶ &nbsp;Play Memory</button>'+
-      '<button class="vbtn" style="background:rgba(255,255,255,.15)" onclick="closeVHS()">✕ Close</button>';
-    document.getElementById('vhs-label').textContent='Press Play to hear a special message 🎵';
-    TAPEAUDIO.forEach(a=>{if(a){a.addEventListener('ended',()=>{
-      const btn=document.getElementById('play-tape-btn');
-      if(btn){btn.innerHTML='▶ &nbsp;دوباره بازی کن';btn.style.background='#1a7a3a';}
-    });}});
-  } else {
-    btns.innerHTML=
-      '<button class="vbtn" id="rec-btn" style="background:#c0392b" onclick="toggleRec()">● &nbsp;Record Message</button>'+
-      '<button class="vbtn" style="background:rgba(255,255,255,.15)" onclick="closeVHS()">✕ Close</button>';
-    document.getElementById('vhs-label').textContent='🎤 Record a voice message — it will download automatically!';
-  }
+  const video=document.getElementById('vhs-video');
+  const panel=document.querySelector('.vhs-panel');
+  const label=document.getElementById('vhs-label');
+  btns.innerHTML='<button class="vbtn" style="background:rgba(255,255,255,.15)" onclick="closeVHS()">✕ بستن</button>';
+  panel.classList.remove('playing');
+  const srcs=[`videos/${idx+1}.mp4`,`videos/${idx+1}.mov`,`videos/${idx+1}.webm`];
+  let attempt=0;
+  const miss=()=>{
+    panel.classList.remove('playing');
+    label.textContent='این نوار هنوز نیست. فایل «'+(idx+1)+'» را در پوشه videos بگذار.';
+  };
+  const tryNext=()=>{
+    if(activeVhsIdx!==idx) return;
+    if(attempt>=srcs.length){miss();return;}
+    const src=srcs[attempt++];
+    video.onerror=()=>tryNext();
+    video.onloadeddata=()=>{
+      if(activeVhsIdx!==idx) return;
+      panel.classList.add('playing');
+      label.textContent=(VHS[idx]&&VHS[idx].label)||('نوار '+(idx+1));
+      video.play().catch(()=>{});
+    };
+    video.src=src;
+    video.load();
+  };
+  tryNext();
 }
 
 window.toggleTapePlay=function(){
