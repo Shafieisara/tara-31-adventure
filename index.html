@@ -863,10 +863,10 @@ function drawVHSTape(vs){
 // ── Photo-based characters: Tara plays, Sara follows, hug on memory ─
 const SPR = { tara:{}, sara:{}, hug:null };
 ['idle','walk','jump'].forEach(pose=>{
-  const ti=new Image(); ti.src=`sprites/tara-${pose}.png`; SPR.tara[pose]=ti;
-  const si=new Image(); si.src=`sprites/sara-${pose}.png`; SPR.sara[pose]=si;
+  const ti=new Image(); ti.src=`sprites/tara-${pose}.png?v=cute`; SPR.tara[pose]=ti;
+  const si=new Image(); si.src=`sprites/sara-${pose}.png?v=cute`; SPR.sara[pose]=si;
 });
-SPR.hug = new Image(); SPR.hug.src = 'sprites/hug.png';
+SPR.hug = new Image(); SPR.hug.src = 'sprites/hug.png?v=cute';
 
 const activeChar = 'tara'; // always Tara
 const buddy = { x:60, y:0, facing:1, bob:0 };
