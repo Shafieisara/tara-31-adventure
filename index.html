@@ -59,7 +59,7 @@
   #title.hidden{display:none}
   #title .since{font-family:Fraunces,Georgia,serif; letter-spacing:.2em; color:#c07020; font-weight:700; font-size:18px}
   #title h1{font-size:clamp(22px,4vw,34px); color:#b84818; line-height:1.35}
-  #title p{max-width:420px; font-size:14px; line-height:1.8; color:rgba(60,30,0,.78)}
+  #title p{max-width:440px; font-size:14.5px; line-height:1.9; color:rgba(60,30,0,.82); direction:rtl; text-align:center; white-space:pre-line}
   #title button{
     margin-top:6px; border:none; border-radius:999px; padding:14px 36px; cursor:pointer;
     background:linear-gradient(135deg,#FF6B9D,#FF9F43); color:#fff; font-weight:700; font-size:16px;
@@ -118,7 +118,11 @@
   .mem-date:empty, .mem-title:empty, .mem-note:empty{display:none}
   .mem-photo-count{font-size:12px; color:#888; min-height:1em; margin-bottom:4px}
   .mem-title{font-size:18px; font-weight:700; margin-bottom:8px}
-  .mem-note{font-size:13.5px; color:#555; line-height:1.75}
+  .mem-note{
+    font-size:13.5px; color:#333; line-height:1.85; direction:rtl; text-align:right;
+    white-space:pre-line; max-height:28vh; overflow:auto;
+  }
+  .mem-title{direction:rtl; text-align:right}
   .mem-actions{display:flex; gap:8px; margin-top:14px}
   .mem-actions button{
     flex:1; border:none; border-radius:12px; padding:12px; cursor:pointer; font-weight:700;
@@ -214,6 +218,9 @@
       <img src="sprites/tara-idle.png" alt="تارا">
     </div>
     <h1>تولدت مبارک، تارا</h1>
+    <p>تاراجانانم،
+آهنگ تولد تو، تولد تولدت مبارک نیست،
+بلکه فلیچیتای بیادموندنیه.</p>
     <button type="button" id="startBtn">شروع</button>
   </div>
   <div id="cakeWin" class="hidden">
@@ -225,7 +232,10 @@
       <div class="flame"></div>
     </div>
     <div class="since">SINCE 2015</div>
-    <h1>تولدت مبارک، تارا</h1>
+    <h1>۳۱ امین ۱۷ آبان تولد مبارک</h1>
+    <p>تاراجانانم
+به قول خودت امسال تولدت برای من خیلی خاص بوده
+پس زودتری به قولت عمل کن</p>
     <button type="button" id="cakeReplay">از اول</button>
   </div>
 </div>

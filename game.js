@@ -547,8 +547,8 @@ function renderMemoryCard(mem){
   }
 
   document.getElementById("memDate").textContent = mem.dateLocked ? formatDate(mem.year) : "";
-  document.getElementById("memTitle").textContent = "";
-  document.getElementById("memNote").textContent = "";
+  document.getElementById("memTitle").textContent = mem.title || "";
+  document.getElementById("memNote").textContent = mem.lines || "";
   const counter = document.getElementById("memPhotoCount");
   if (counter) {
     const n = Math.max(1, (mem.imgs||[]).length);
@@ -633,9 +633,9 @@ function showWin(){
     titleEl.classList.add("hidden");
   } else {
     titleEl.classList.remove("hidden");
-    titleEl.querySelector("h1").textContent = "تولدت مبارک، تارا";
+    titleEl.querySelector("h1").textContent = "۳۱ امین ۱۷ آبان تولد مبارک";
     const titleP = titleEl.querySelector("p");
-    if (titleP) titleP.textContent = "";
+    if (titleP) titleP.textContent = "تاراجانانم\nبه قول خودت امسال تولدت برای من خیلی خاص بوده\nپس زودتری به قولت عمل کن";
     titleEl.querySelector("#startBtn").textContent = "از اول";
   }
 }
