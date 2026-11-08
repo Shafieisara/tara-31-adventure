@@ -39,7 +39,7 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .mc-tape{padding:9px 0;text-align:center;font-size:13px;font-weight:bold;color:#fff;letter-spacing:.5px;text-shadow:0 1px 2px rgba(0,0,0,.35);direction:rtl}
 .mc-tape:empty{display:none}
 .mc-body{padding:14px 18px 18px}
-.mc-title{font-size:17px;font-weight:bold;color:#1a1a1a;margin-bottom:8px}
+.mc-title{display:none}
 .mc-lines{font-size:14.5px;color:#333;line-height:1.9;direction:rtl;text-align:right;white-space:pre-line;max-height:22vh;overflow:auto}
 .mc-count{position:absolute;top:10px;left:10px;z-index:2;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:4px 10px;font-size:13px;direction:ltr}
 .mc-close{display:block;width:100%;margin-top:16px;padding:11px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;color:#fff;letter-spacing:.5px;transition:opacity .15s}
@@ -774,7 +774,7 @@ function drawMemCard(m){
   const plat=P_DEF.find(p=>p.memId===m.id);if(!plat) return;
   const cx=plat.x+plat.w/2, top=plat.y;
   if(cx<camX-200||cx>camX+VW+200) return;
-  const CW=168,CH=196;
+  const CW=168,CH=172;
   const cardX=cx-CW/2, cardY=top-CH-14;
   const isP=portal&&portal.memId===m.id;
   ctx.save();
@@ -817,26 +817,8 @@ function drawMemCard(m){
   }
   if(visited.has(m.id)){ctx.strokeStyle=m.col;ctx.lineWidth=2.2;rr(cardX,cardY,CW,CH,7);ctx.stroke();}
   ctx.fillStyle='rgba(255,230,100,.68)';rr(cx-18,cardY-9,36,13,2);ctx.fill();
-  const showYear = m.year && !/^\d{4}-\d{2}-\d{2}$/.test(m.year);
-  if(showYear){
-    ctx.fillStyle=m.col;rr(cardX+8,cardY+162,CW-16,14,6);ctx.fill();
-    ctx.fillStyle='#fff';ctx.font='bold 9px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';ctx.fillText(m.year,cx,cardY+169);
-  }
-  ctx.fillStyle='#1a1a1a';ctx.font='bold 10px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='top';ctx.fillText(m.title,cx,cardY+180);
   if(visited.has(m.id)){ctx.fillStyle=m.col;ctx.font='11px serif';ctx.fillText('✓',cardX+CW-13,cardY+5);}
   ctx.restore();
-  const dist=Math.abs(PL.x+PL.w/2-cx);
-  if(dist<200&&PL.y>top-120&&!portal&&!visited.has(m.id)){
-    const bw=190,bh=44;
-    const bx=Math.max(camX+5,Math.min(camX+VW-bw-5,cx-bw/2));
-    const by=Math.max(camY+48,cardY-bh-8); // keep below top HUD banner
-    ctx.fillStyle='rgba(8,3,26,.93)';rr(bx,by,bw,bh,12);ctx.fill();
-    ctx.strokeStyle=m.col;ctx.lineWidth=1.6;rr(bx,by,bw,bh,12);ctx.stroke();
-    ctx.fillStyle=m.col;ctx.font='bold 12px Vazirmatn,Tahoma,Georgia';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText(m.title,bx+bw/2,by+15);
-    ctx.fillStyle='rgba(255,255,255,.88)';ctx.font='11px Vazirmatn,Tahoma,Georgia';
-    ctx.fillText('روی سکو بایست — خاطره باز می‌شود',bx+bw/2,by+31);
-  }
 }
 
 // ── VHS Tape ──────────────────────────────────────────────────────
@@ -911,7 +893,7 @@ function drawCuteSprite(id, x, footY, facing, moving, airborne, scale){
 }
 
 function triggerHug(){
-  hugUntil = gt + 110; // ~1.8s at 60fps
+  hugUntil = gt + 360; // ~6s at 60fps, after the memory card closes
   // pull buddy next to Tara for the hug
   buddy.x = PL.x + PL.w/2 - 8;
   buddy.y = PL.y + PL.h/2;
@@ -1169,9 +1151,13 @@ function openMemory(mid){
   document.getElementById('mc-lines').textContent=m.lines.replace(/\\n/g,'\n');
   document.getElementById('mc-close').style.background=m.col;
   document.getElementById('mc').style.boxShadow=`0 0 80px ${m.col}77`;
-  MOV.classList.add('on'); triggerHug(); triggerHug();
+  MOV.classList.add('on');
 }
-window.closeMemory=()=>MOV.classList.remove('on');
+window.closeMemory=()=>{
+  const wasOpen = MOV.classList.contains('on');
+  MOV.classList.remove('on');
+  if(wasOpen) triggerHug();
+};
 
 
 // ── TARA_ENHANCE: era signs + 2015 gate + typewriter letter (mix: A + pixel-valentine letter + volcano polaroid multi-photo) ──
@@ -1209,7 +1195,6 @@ function drawEraSigns(){
 const _renderWorldOrig = renderWorld;
 renderWorld = function(){
   _renderWorldOrig();
-  drawEraSigns();
 };
 
 
