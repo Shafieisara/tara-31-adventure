@@ -13,9 +13,10 @@ body{background:radial-gradient(1200px 700px at 50% -10%,#c8e9ff 0%,#87CEEB 45%,
 canvas{display:block;width:100%;height:auto;border-radius:16px;box-shadow:0 12px 40px rgba(20,60,100,.22),0 0 0 1px rgba(255,255,255,.25);cursor:pointer;transition:filter .3s;max-height:calc(100vh - 48px)}
 canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 #ss{position:absolute;inset:0;border-radius:18px;background:linear-gradient(160deg,#e0f4ff 0%,#b8e6ff 50%,#d4f5d0 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:50;cursor:pointer}
-#ss .big{font-size:clamp(55px,12vw,100px);display:block;animation:bob 2s ease-in-out infinite alternate}
+#ss .since-brand{position:relative;z-index:2;margin-bottom:10px}
+#ss .big{font-size:clamp(44px,8vw,72px);display:block;line-height:1;margin-top:4px;animation:bob 2s ease-in-out infinite alternate}
 @keyframes bob{from{transform:translateY(0) rotate(-4deg)}to{transform:translateY(-18px) rotate(4deg)}}
-#ss h1{font-size:clamp(20px,4vw,42px);color:#c05010;text-shadow:0 2px 12px rgba(255,160,60,.5);text-align:center;line-height:1.3}
+#ss h1{font-size:clamp(22px,4vw,40px);color:#c05010;text-shadow:0 2px 12px rgba(255,160,60,.5);text-align:center;line-height:1.45;direction:rtl}
 #ss p{white-space:pre-line;direction:rtl;text-align:center;color:rgba(60,30,0,.78);font-size:14px;text-align:center;max-width:420px;line-height:1.85;padding:0 12px}
 #play-btn{padding:14px 48px;border-radius:50px;background:linear-gradient(135deg,#FF6B9D,#FF9F43);color:#fff;font-size:17px;font-weight:bold;border:none;cursor:pointer;box-shadow:0 4px 34px rgba(255,120,60,.5);letter-spacing:1px;transition:transform .15s}
 #play-btn:hover{transform:scale(1.06)}
@@ -26,7 +27,7 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .ov-bg{position:absolute;inset:0;background:rgba(20,10,5,.88);backdrop-filter:blur(20px)}
 .mc{position:relative;z-index:1;background:#fff;border-radius:16px;width:min(920px,96vw);max-height:96vh;overflow:auto;animation:popIn .5s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 80px rgba(0,0,0,.45)}
 @keyframes popIn{from{transform:scale(.15) rotate(-8deg);opacity:0}to{transform:scale(1) rotate(0deg);opacity:1}}
-.mc-photo{height:min(78vh,820px);display:flex;align-items:center;justify-content:center;font-size:74px;position:relative;overflow:hidden;background:#111}
+.mc-photo{height:min(68vh,720px);display:flex;align-items:center;justify-content:center;font-size:74px;position:relative;overflow:hidden;background:#111}
 .mc-photo img{width:100%;height:100%;object-fit:contain;object-position:center}
 .mc-carousel-arrow{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.45);border:none;color:#fff;font-size:18px;cursor:pointer;padding:6px 10px;border-radius:50%;z-index:2;transition:background .15s}
 .mc-carousel-arrow:hover{background:rgba(0,0,0,.7)}
@@ -35,10 +36,12 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .mc-carousel-dots{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:6px;z-index:2}
 .mc-carousel-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45);transition:background .2s;display:block}
 .mc-carousel-dots span.active{background:#fff}
-.mc-tape{padding:9px 0;text-align:center;font-size:13px;font-weight:bold;color:#fff;letter-spacing:.5px;text-shadow:0 1px 2px rgba(0,0,0,.35)}
+.mc-tape{padding:9px 0;text-align:center;font-size:13px;font-weight:bold;color:#fff;letter-spacing:.5px;text-shadow:0 1px 2px rgba(0,0,0,.35);direction:rtl}
+.mc-tape:empty{display:none}
 .mc-body{padding:14px 18px 18px}
 .mc-title{font-size:17px;font-weight:bold;color:#1a1a1a;margin-bottom:8px}
-.mc-lines{font-size:13.5px;color:#333;line-height:1.85;direction:rtl;text-align:right;white-space:pre-line}
+.mc-lines{font-size:14.5px;color:#333;line-height:1.9;direction:rtl;text-align:right;white-space:pre-line;max-height:22vh;overflow:auto}
+.mc-count{position:absolute;top:10px;left:10px;z-index:2;background:rgba(0,0,0,.55);color:#fff;border-radius:999px;padding:4px 10px;font-size:13px;direction:ltr}
 .mc-close{display:block;width:100%;margin-top:16px;padding:11px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:bold;color:#fff;letter-spacing:.5px;transition:opacity .15s}
 .mc-close:hover{opacity:.85}
 #vhsov{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center}
@@ -51,7 +54,7 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .vhs-label{font-size:11px;color:rgba(255,255,255,.6);text-align:center;margin-bottom:14px}
 .vhs-btns{display:flex;gap:8px;justify-content:center}
 .vbtn{padding:9px 22px;border-radius:30px;border:none;cursor:pointer;font-size:13px;font-weight:bold;color:#fff;letter-spacing:.3px}
-#hint{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:rgba(30,40,50,.78);font-size:13.5px;text-align:center;pointer-events:none;letter-spacing:.2px;background:rgba(255,255,255,.55);backdrop-filter:blur(6px);padding:6px 14px;border-radius:999px;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis}
+#hint{display:none;position:fixed;bottom:10px;left:50%;transform:translateX(-50%);color:rgba(30,40,50,.78);font-size:13.5px;text-align:center;pointer-events:none;letter-spacing:.2px;background:rgba(255,255,255,.55);backdrop-filter:blur(6px);padding:6px 14px;border-radius:999px;white-space:nowrap;max-width:96vw;overflow:hidden;text-overflow:ellipsis;direction:rtl}
 </style>
 
 <style id="tara-extra">
@@ -77,7 +80,7 @@ canvas.vhs-blur{filter:blur(8px) brightness(0.6)}
 .letter-actions .primary{background:#e0a85c;color:#121816}
 .letter-actions .ghost{background:transparent;color:#f2ebe0;border:1px solid rgba(242,235,224,.3)}
 #hud-brand{position:fixed;top:10px;left:12px;z-index:5;font-family:Georgia,serif;color:rgba(224,168,92,.55);letter-spacing:.1em;font-size:11px;text-shadow:0 1px 6px rgba(0,0,0,.35);pointer-events:none}
-#music-toggle{position:fixed;top:10px;right:12px;z-index:310;border:1px solid rgba(224,168,92,.55);background:rgba(18,24,22,.82);color:#e0a85c;border-radius:999px;padding:9px 14px;font-size:12.5px;cursor:pointer;font-family:Tahoma,sans-serif;backdrop-filter:blur(6px);transition:background .15s,color .15s,opacity .15s}
+#music-toggle{position:fixed;top:10px;right:12px;z-index:310;border:1px solid rgba(224,168,92,.55);background:rgba(18,24,22,.82);color:#e0a85c;border-radius:999px;padding:9px 14px;font-size:12.5px;cursor:pointer;font-family:Tahoma,sans-serif;backdrop-filter:blur(6px);transition:background .15s,color .15s,opacity .15s;direction:ltr;unicode-bidi:isolate}
 #music-toggle.on{background:rgba(224,168,92,.92);color:#121816;border-color:#e0a85c}
 #music-toggle.off{opacity:.72}
 #mov{z-index:305}
@@ -247,9 +250,9 @@ const CONFIG = {
 // ═══════════════════════════════════════════════════════════════════
 
 // Apply honoree name to the start screen
-document.getElementById('ss-title').textContent = `Since 2015 — تولدت مبارک، ${CONFIG.HONOREE_NAME}!`;
+document.getElementById('ss-title').textContent = `تولدت مبارک، ${CONFIG.HONOREE_NAME}`;
 document.getElementById('ss-desc').textContent =
-  `۱۷ آبان / ۸ نوامبر — تولد تارا. تارا بازی می‌کند، سارا همراهش است. با هر خاطره بغل!`;
+  `تاراجانانم،\nآهنگ تولد تو، تولد تولدت مبارک نیست،\nبلکه فلیچیتای بیادموندنیه.`;
 
 const canvas=document.getElementById('gc');
 const ctx=canvas.getContext('2d');
@@ -618,9 +621,11 @@ function drawCelebrationScreen(){
   ctx.globalAlpha=f(0);drawBigCake(W/2,cakeY,cakeScale,false);ctx.globalAlpha=1;
   ctx.globalAlpha=f(30);
   ctx.fillStyle='rgba(255,255,255,.9)';ctx.font=`italic ${W<700?14:16}px Georgia`;ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText('هر لحظهٔ مشترک، یک خاطرهٔ قیمتی است ❤️',W/2,H*.92);
+  ctx.direction='rtl';
+  ctx.fillText('تاراجانانم، این مال امشبه',W/2,H*.92);
   ctx.fillStyle='rgba(255,255,255,.65)';ctx.font='13px Georgia';
-  ctx.fillText(`تولدت مبارک ${CONFIG.HONOREE_NAME}! · ${CONFIG.MILESTONE_YEARS} سال دوستی از ${CONFIG.FRIENDSHIP_SINCE} 🎂`,W/2,H*.955);
+  ctx.direction='rtl';
+  ctx.fillText(`تولدت مبارک، ${CONFIG.HONOREE_NAME}`,W/2,H*.955);
   ctx.globalAlpha=1;
   if(eTimer>60){
     const popA=Math.min(1,(eTimer-60)/30);
@@ -797,7 +802,7 @@ function drawMemCard(m){
   } else {
     ctx.font='36px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(m.icon,cx,cardY+53);
   }
-  if(cImgs.length>1){
+  if(cImgs.length>1 && cImgs.length<=8){
     const dotR=3,dotGap=9,dotY=cardY+150;
     const totalDotW=(cImgs.length-1)*dotGap;
     cImgs.forEach((_,di)=>{
@@ -807,8 +812,11 @@ function drawMemCard(m){
   }
   if(visited.has(m.id)){ctx.strokeStyle=m.col;ctx.lineWidth=2.2;rr(cardX,cardY,CW,CH,7);ctx.stroke();}
   ctx.fillStyle='rgba(255,230,100,.68)';rr(cx-18,cardY-9,36,13,2);ctx.fill();
-  ctx.fillStyle=m.col;rr(cardX+8,cardY+162,CW-16,14,6);ctx.fill();
-  ctx.fillStyle='#fff';ctx.font='bold 9px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';ctx.fillText(m.year,cx,cardY+169);
+  const showYear = m.year && !/^\d{4}-\d{2}-\d{2}$/.test(m.year);
+  if(showYear){
+    ctx.fillStyle=m.col;rr(cardX+8,cardY+162,CW-16,14,6);ctx.fill();
+    ctx.fillStyle='#fff';ctx.font='bold 9px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';ctx.fillText(m.year,cx,cardY+169);
+  }
   ctx.fillStyle='#1a1a1a';ctx.font='bold 10px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='top';ctx.fillText(m.title,cx,cardY+180);
   if(visited.has(m.id)){ctx.fillStyle=m.col;ctx.font='11px serif';ctx.fillText('✓',cardX+CW-13,cardY+5);}
   ctx.restore();
@@ -995,7 +1003,8 @@ function drawHUD(){
   ctx.fillStyle='rgba(0,0,0,.58)';rr(W/2-210,8,420,46,14);ctx.fill();
   ctx.strokeStyle='rgba(255,215,0,.28)';ctx.lineWidth=1;rr(W/2-210,8,420,46,14);ctx.stroke();
   ctx.fillStyle='#FFD93D';ctx.font='bold 18px Georgia,serif';ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillText(`🎂 ${CONFIG.BRAND} — تولدت مبارک، ${CONFIG.HONOREE_NAME}!`,W/2,31);
+  ctx.direction='rtl';
+  ctx.fillText(`تولدت مبارک، ${CONFIG.HONOREE_NAME}`,W/2,31);
   // journey thin track
   const journey=Math.min(1,Math.max(0,(PL.x-80)/6300));
   ctx.fillStyle='rgba(0,0,0,.28)';rr(20,H-38,W-40,4,2);ctx.fill();
@@ -1007,7 +1016,8 @@ function drawHUD(){
   pg.addColorStop(0,'#FF6B9D');pg.addColorStop(.3,'#FFD93D');pg.addColorStop(.65,'#6BCB77');pg.addColorStop(1,'#C77DFF');
   ctx.fillStyle=pg;rr(20,H-28,Math.max(prog>0?18:0,(W-40)*prog),18,9);ctx.fill();
   ctx.save();ctx.shadowColor='rgba(0,0,0,.85)';ctx.shadowBlur=3;ctx.fillStyle='#fff';ctx.font='bold 13px Vazirmatn,Tahoma,Georgia';ctx.textBaseline='middle';
-  ctx.fillText(`خاطره ${visited.size} از ${MEM.length}`,W/2,H-19);ctx.restore();
+  ctx.direction='rtl';
+  ctx.fillText(`\u202Bخاطره \u200E${visited.size}\u200E از \u200E${MEM.length}\u200E\u202C`,W/2,H-19);ctx.restore();
   ctx.font='14px serif';ctx.textAlign='right';let sx2=W-12;
   for(let i=MEM.length-1;i>=0;i--){ctx.globalAlpha=visited.has(i)?1:.22;ctx.fillText('⭐',sx2,24);sx2-=22;}
   ctx.globalAlpha=1;
@@ -1134,14 +1144,19 @@ function renderOvSlide(m,photoDiv){
     const sp=document.createElement('span');sp.textContent=m.icon;photoDiv.appendChild(sp);
   }
   if(imgs.length>1){
+    const count=document.createElement('div');count.className='mc-count';
+    count.textContent=(ovSlide+1)+' / '+imgs.length;
+    photoDiv.appendChild(count);
     const la=document.createElement('button');la.className='mc-carousel-arrow left';la.textContent='‹';
     la.onclick=()=>{ovSlide=(ovSlide-1+imgs.length)%imgs.length;renderOvSlide(m,photoDiv);};
     const ra=document.createElement('button');ra.className='mc-carousel-arrow right';ra.textContent='›';
     ra.onclick=()=>{ovSlide=(ovSlide+1)%imgs.length;renderOvSlide(m,photoDiv);};
     photoDiv.appendChild(la);photoDiv.appendChild(ra);
-    const dotWrap=document.createElement('div');dotWrap.className='mc-carousel-dots';
-    imgs.forEach((_,i)=>{const d=document.createElement('span');if(i===ovSlide)d.className='active';dotWrap.appendChild(d);});
-    photoDiv.appendChild(dotWrap);
+    if(imgs.length<=8){
+      const dotWrap=document.createElement('div');dotWrap.className='mc-carousel-dots';
+      imgs.forEach((_,i)=>{const d=document.createElement('span');if(i===ovSlide)d.className='active';dotWrap.appendChild(d);});
+      photoDiv.appendChild(dotWrap);
+    }
   }
 }
 function openMemory(mid){
@@ -1149,7 +1164,7 @@ function openMemory(mid){
   ovSlide=carouselState[mid]||0;
   const photoDiv=document.getElementById('mc-photo');
   renderOvSlide(m,photoDiv);
-  document.getElementById('mc-tape').textContent=m.year;
+  document.getElementById('mc-tape').textContent=/^\d{4}-\d{2}-\d{2}$/.test(m.year||'') ? '' : (m.year||'');
   document.getElementById('mc-tape').style.background=m.col;
   document.getElementById('mc-title').textContent=m.title;
   document.getElementById('mc-lines').textContent=m.lines.replace(/\\n/g,'\n');
@@ -1162,14 +1177,14 @@ window.closeMemory=()=>MOV.classList.remove('on');
 
 // ── TARA_ENHANCE: era signs + 2015 gate + typewriter letter (mix: A + pixel-valentine letter + volcano polaroid multi-photo) ──
 const ERA_SIGNS = [
-  {x:520, label:'پیش از ما'},
-  {x:1170, label:'گروه مقنعه'},
-  {x:2100, label:'پل طبیعت'},
-  {x:3250, label:'قلعهٔ فرش'},
-  {x:3900, label:'پرنسس تارا'},
-  {x:4555, label:'پژو و کافه'},
-  {x:5200, label:'برف و چتر'},
-  {x:6000, label:'شیشهٔ خوشبختی'},
+  {x:520, label:'بی‌اف‌اف کیست؟'},
+  {x:1170, label:'فرجه'},
+  {x:2100, label:'تاراجانانم'},
+  {x:3250, label:'Felicità'},
+  {x:3900, label:'امسال خاص بوده'},
+  {x:4555, label:'هوای ابری'},
+  {x:5200, label:'حسن ختام'},
+  {x:6000, label:'تولدت مبارک'},
 ];
 const _drawMemCard = drawMemCard;
 drawMemCard = function(m){
@@ -1436,15 +1451,15 @@ window.toggleRec=async function(){
 window.addEventListener('keydown',e=>{
   keys[e.key]=true;
   if([' ','ArrowUp','ArrowDown','ArrowLeft','ArrowRight'].includes(e.key)) e.preventDefault();
-  if(!started&&(e.key===' '||e.key==='Enter')){SS.style.display='none';started=true;buddy.x=PL.x-20;buddy.y=PL.y+PL.h/2;spawnConf(PL.x+PL.w/2,PL.y,55);}
+  if(!started&&(e.key===' '||e.key==='Enter')){SS.style.display='none';const hint=document.getElementById('hint');if(hint)hint.style.display='block';started=true;buddy.x=PL.x-20;buddy.y=PL.y+PL.h/2;spawnConf(PL.x+PL.w/2,PL.y,55);}
 });
 window.addEventListener('keyup',e=>{keys[e.key]=false;});
-document.getElementById('play-btn').onclick=()=>{SS.style.display='none';started=true;buddy.x=PL.x-20;buddy.y=PL.y+PL.h/2;spawnConf(PL.x+PL.w/2,PL.y,55);};
+document.getElementById('play-btn').onclick=()=>{SS.style.display='none';const hint=document.getElementById('hint');if(hint)hint.style.display='block';started=true;buddy.x=PL.x-20;buddy.y=PL.y+PL.h/2;spawnConf(PL.x+PL.w/2,PL.y,55);};
 
 let tx0=0,ty0=0,jq=false;
 canvas.addEventListener('touchstart',e=>{
   e.preventDefault();tx0=e.touches[0].clientX;ty0=e.touches[0].clientY;
-  if(!started){SS.style.display='none';started=true;}
+  if(!started){SS.style.display='none';const hint=document.getElementById('hint');if(hint)hint.style.display='block';started=true;}
 },{passive:false});
 canvas.addEventListener('touchmove',e=>{
   e.preventDefault();
