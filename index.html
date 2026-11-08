@@ -878,10 +878,10 @@ function drawVHSTape(vs){
 // ── Photo-based characters: Tara plays, Sara follows, hug on memory ─
 const SPR = { tara:{}, sara:{}, hug:null };
 ['idle','walk','jump'].forEach(pose=>{
-  const ti=new Image(); ti.src=`sprites/tara-${pose}.png?v=cute`; SPR.tara[pose]=ti;
-  const si=new Image(); si.src=`sprites/sara-${pose}.png?v=cute`; SPR.sara[pose]=si;
+  const ti=new Image(); ti.src=`sprites/tara-${pose}@2x.png?v=v2`; SPR.tara[pose]=ti;
+  const si=new Image(); si.src=`sprites/sara-${pose}@2x.png?v=v2`; SPR.sara[pose]=si;
 });
-SPR.hug = new Image(); SPR.hug.src = 'sprites/hug.png?v=cute';
+SPR.hug = new Image(); SPR.hug.src = 'sprites/hug@2x.png?v=v2';
 
 const activeChar = 'tara'; // always Tara
 const buddy = { x:60, y:0, facing:1, bob:0 };
@@ -894,22 +894,18 @@ function spriteFor(id, moving, airborne){
   return pack.idle;
 }
 
-function drawCuteSprite(id, x, y, facing, moving, airborne, scale){
+function drawCuteSprite(id, x, footY, facing, moving, airborne, scale){
   const img = spriteFor(id, moving, airborne);
   const sc = scale || 1;
-  const drawH = 52 * sc;
-  const drawW = img && img.complete && img.naturalWidth ? (img.naturalWidth/img.naturalHeight)*drawH : 28*sc;
+  const drawH = 100 * sc;
+  const drawW = img && img.complete && img.naturalWidth ? (img.naturalWidth/img.naturalHeight)*drawH : 40*sc;
   ctx.save();
-  ctx.translate(x, y);
-  if(facing===1) ctx.scale(-1,1);
+  ctx.translate(x, footY);
+  if(facing===-1) ctx.scale(-1,1);
   ctx.fillStyle='rgba(0,0,0,.16)';
-  ctx.beginPath(); ctx.ellipse(0, PL.h/2+2, drawW*0.38, 3.2, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0, -1, drawW*0.22, 3.2, 0, 0, Math.PI*2); ctx.fill();
   if(img && img.complete && img.naturalWidth){
-    ctx.drawImage(img, -drawW/2, -drawH/2 + 2, drawW, drawH);
-  } else {
-    ctx.fillStyle = id==='tara' ? '#3d5a80' : '#7a2f45';
-    ctx.beginPath(); ctx.arc(0,-8,10,0,Math.PI*2); ctx.fill();
-    ctx.fillRect(-7,-2,14,18);
+    ctx.drawImage(img, -drawW/2, -drawH, drawW, drawH);
   }
   ctx.restore();
 }
@@ -921,52 +917,50 @@ function triggerHug(){
   buddy.y = PL.y + PL.h/2;
 }
 
-function drawHugPose(cx, cy){
+function drawHugPose(cx, footY){
   const img = SPR.hug;
-  const drawH = 64;
-  const drawW = img && img.complete && img.naturalWidth ? (img.naturalWidth/img.naturalHeight)*drawH : 90;
-  const pulse = 1 + Math.sin(gt*0.25)*0.04;
+  const drawH = 118;
+  const drawW = img && img.complete && img.naturalWidth ? (img.naturalWidth/img.naturalHeight)*drawH : 140;
+  const pulse = 1 + Math.sin(gt*0.25)*0.03;
   ctx.save();
-  ctx.translate(cx, cy);
+  ctx.translate(cx, footY);
   ctx.scale(pulse, pulse);
   ctx.fillStyle='rgba(0,0,0,.14)';
-  ctx.beginPath(); ctx.ellipse(0, PL.h/2+4, drawW*0.42, 3.5, 0, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(0, -2, drawW*0.28, 3.6, 0, 0, Math.PI*2); ctx.fill();
   if(img && img.complete && img.naturalWidth){
-    ctx.drawImage(img, -drawW/2, -drawH/2, drawW, drawH);
+    ctx.drawImage(img, -drawW/2, -drawH, drawW, drawH);
   }
   // floating hearts
   ctx.globalAlpha = 0.75;
   ctx.font = '14px serif';
   ctx.textAlign = 'center';
   const hx = Math.sin(gt*0.2)*10;
-  ctx.fillText('💕', hx, -drawH/2 - 8 - (gt%40)*0.15);
-  ctx.fillText('✨', -hx*0.6, -drawH/2 - 18);
+  ctx.fillText('💕', hx, -drawH - 10 - (gt%40)*0.15);
+  ctx.fillText('✨', -hx*0.6, -drawH - 22);
   ctx.restore();
 }
 
 function drawCharacter(){
   // While hugging after a memory opens, show shared hug sprite
   if(gt < hugUntil){
-    const cx = PL.x + PL.w/2;
-    const cy = PL.y + PL.h/2;
-    drawHugPose(cx, cy);
+    drawHugPose(PL.x + PL.w/2, PL.y + PL.h);
     return;
   }
 
   const moving = Math.abs(PL.vx) > 0.45;
   const airborne = !PL.onGround;
-  const bob = PL.onGround && moving ? Math.sin(gt*0.28)*1.4 : (airborne ? -2 : 0);
-  drawCuteSprite('tara', PL.x+PL.w/2, PL.y+PL.h/2+bob, PL.facing, moving, airborne, 1.15);
+  const bob = PL.onGround && moving ? Math.sin(gt*0.28)*1.4 : (airborne ? -8 : 0);
+  drawCuteSprite('tara', PL.x+PL.w/2, PL.y+PL.h+bob, PL.facing, moving, airborne, 1);
 
   // Sara always follows Tara
-  const targetX = PL.x + PL.w/2 - PL.facing*34;
+  const targetX = PL.x + PL.w/2 - PL.facing*52;
   const targetY = PL.y + PL.h/2;
   buddy.x += (targetX - buddy.x) * 0.08;
   buddy.y += (targetY - buddy.y) * 0.12;
   buddy.facing = PL.facing;
   buddy.bob = Math.sin(gt*0.15)*2;
   const bMoving = Math.abs(PL.vx) > 0.45;
-  drawCuteSprite('sara', buddy.x, buddy.y + buddy.bob + 4, buddy.facing, bMoving, !PL.onGround && Math.abs(PL.vy)>2, 0.92);
+  drawCuteSprite('sara', buddy.x, buddy.y + PL.h/2 + buddy.bob, buddy.facing, bMoving, airborne, 0.94);
 }
 
 function renderWorld(){
